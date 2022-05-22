@@ -1,0 +1,9 @@
+#Create Virtual Enviornment Steps [windows]
+- python -m virtualenv or pip install virtualenv
+- .\scripts\activate #This will activate that enviornment
+
+#Install django on system
+- pip install django
+- python -m django --version
+- django-admin #to check django admin installed or not
+
