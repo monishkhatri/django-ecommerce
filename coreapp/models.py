@@ -5,11 +5,15 @@ from django.contrib.auth.models import User
 
 
 # Create your models here.
+class Status:
+    STATUS =(("1", "Active"),("0", "De-active"),)
+    YESNO =(("1", "Yes"),("0", "No"),)
 class Category(models.Model):
+    
     id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=250)
     parent = models.IntegerField(default='0')
-    status = models.IntegerField(default='1')
+    status = models.CharField(max_length = 20, choices = Status.STATUS, default = '1')
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
@@ -22,7 +26,7 @@ class Brand(models.Model):
     name = models.CharField(max_length=250)
     description = models.TextField()
     parent = models.IntegerField(default='0')
-    status = models.IntegerField(default='1')
+    status = models.CharField(max_length = 20, choices = Status.STATUS, default = '1')
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
@@ -34,12 +38,16 @@ class Product(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, default=None)
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE, default=None)
-    title = models.CharField(max_length=500)
+    slug = models.SlugField(max_length=500, default=None)
+    title = models.CharField(max_length=500, default=None)
     desc_short = models.TextField()
     desc_long = models.TextField()
     specification = models.TextField()
+    dashed_price = models.FloatField(null=True, blank=True, default=None)
+    actual_price = models.FloatField(null=True, blank=True, default=None)
     stock_count = models.IntegerField(default=0)
-    is_published = models.IntegerField(default='0')
+    is_published = models.CharField(max_length = 20, choices = Status.YESNO, default = '0')
+    is_in_sale = models.CharField(max_length = 20, choices = Status.YESNO, default = '0')
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
@@ -56,7 +64,7 @@ class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, default=None)
     name = models.CharField(max_length=250, default=None)
     path = models.ImageField(upload_to="product/images", default='product/no-data.png')
-    status = models.IntegerField(default='1')
+    status = models.CharField(max_length = 20, choices = Status.STATUS, default = '1')
 
 class Contact(models.Model):
     id = models.AutoField(primary_key=True)
