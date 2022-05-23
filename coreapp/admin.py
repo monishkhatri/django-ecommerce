@@ -14,16 +14,39 @@ class BrandAdmin(admin.ModelAdmin):
 
 @admin.register(ProductImage)
 class ProductImageAdmin(admin.ModelAdmin):
-    list_display = ['product', 'path', 'status']
+    # For set Initial Values in admin
+    def get_changeform_initial_data(self, request):
+        return {'user': request.user.id}
+
+    def product_name(self, obj):
+        return format_html('<a target="_blank" href="%s">%s</a>' % ('/admin/coreapp/product/' + str(obj.product.id) + '/change', obj.product.title))
+    product_name.admin_order_field = 'product'
+
+    list_display = ['product_name', 'path', 'status']
+
+class ProdutImageTabulurInline(admin.TabularInline):
+    model = ProductImage
+    
+    # For set Initial Values in admin
+    def get_changeform_initial_data(self, request):
+        return {'user': request.user.id}
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
+    inlines = [
+        ProdutImageTabulurInline
+    ]
+
+    # For set Initial Values in admin
+    def get_changeform_initial_data(self, request):
+        return {'user': request.user.id}
+
     def created_on(self, obj):
         return obj.created_at.strftime("%d %b %Y")
-    # created_on.admin_order_field = 'created_at'
+    created_on.admin_order_field = 'created_at'
 
     def product_name(self, obj):
-        return format_html('<a target="_blank" href="%s">%s</a>' % ('/admin/blog/blog/' + str(obj.id) + '/change', obj.title))
+        return format_html('<a href="%s">%s</a>' % ('/admin/coreapp/product/' + str(obj.id) + '/change', obj.title))
     product_name.admin_order_field = 'blog'
     
     list_display = ['created_on', 'category', 'brand', 'product_name', 'stock_count', 'actual_price', 'is_published']
