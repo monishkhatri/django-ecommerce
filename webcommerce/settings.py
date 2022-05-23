@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'coreapp.apps.CoreappConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -138,3 +139,15 @@ MEDIA_URL = '/media/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# JAZZ ADMIN SETTINGS
+# https://django-jazzmin.readthedocs.io/configuration/
+
+JAZZMIN_SETTINGS = {
+    "site_title": "Web Ecommerce",
+    "site_header": "E-Commerce",    
+    "site_brand": "E-Commerce",
+    "welcome_sign": "Welcome to the Web E-commerce",
+    "copyright": "Web E-Commerce",
+    "search_model": "auth.User",
+}
