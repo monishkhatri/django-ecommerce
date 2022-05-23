@@ -331,7 +331,7 @@ ol {
 }
 
 .header__menu {
-	padding: 10px 0 10px;
+	padding: 15px 0 15px;
 }
 
 .header__menu ul li {
@@ -377,6 +377,8 @@ ol {
 	-webkit-transition: all, 0.3s;
 	-o-transition: all, 0.3s;
 	transition: all, 0.3s;
+	margin-top: 8px;
+    box-shadow: 1px 1px 10px rgb(168, 168, 168);
 }
 
 .header__menu ul li .dropdown li {
@@ -403,7 +405,7 @@ ol {
 	overflow: hidden;
     white-space: nowrap;
     /* text-overflow: ellipsis; */
-    max-width: 108px;
+    /* max-width: 108px; */
     display: block;
 	position: relative;
 }

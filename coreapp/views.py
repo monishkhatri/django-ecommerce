@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.shortcuts import render
-from .models import Product, ProductImage
+from .models import Category, Product, ProductImage
 from django.shortcuts import render, redirect
 from django.template.loader import get_template
 from django.http import HttpRequest, HttpResponse
@@ -85,7 +85,18 @@ def handleSignup(request):
     else:
         return render(request, 'coreapp/authentication/register.html')
 
-# Create your views here.
+def commonData():
+    context = {}
+    parentCatData = Category.objects.filter(status=1,parent__isnull=True).order_by('id')
+    for cat in parentCatData:
+        cat.subcatData = ""
+        subCategoryData = Category.objects.filter(status=1,parent=cat.id)
+        if subCategoryData:
+            cat.subcatData = subCategoryData
+
+    context['catData'] = parentCatData
+    return context
+
 def index(request):
     product = Product.objects.filter(is_published=1).order_by('-id')
     for singleblog in product:
@@ -93,10 +104,12 @@ def index(request):
         singleblog.image = ""
         if blogsImg:
             singleblog.image = blogsImg
+
     params = {
         'productData': product,
+        'commonData': commonData()
     }
-
+    
     return render(request, 'coreapp/index.html', params)
 
 class productDetail(DetailView):
