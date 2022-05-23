@@ -6,7 +6,7 @@ from coreapp.models import Brand, Category, Contact, Product, ProductImage
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ['name', 'status', 'created_at']
+    list_display = ['name', 'parent', 'status', 'created_at']
 
 @admin.register(Brand)
 class BrandAdmin(admin.ModelAdmin):
