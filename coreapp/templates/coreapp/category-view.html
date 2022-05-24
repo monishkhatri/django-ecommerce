@@ -72,7 +72,7 @@
                         <div class="col-lg-4 col-md-6">
                             <div class="product__item">
                                 <div class="product__item__pic set-bg" data-setbg="/media/{{product.image.path}}">
-                                    {% if product.is_in_sale %}<div class="label sale">Sale</div>{% endif %}
+                                    {% if product.is_in_sale == "1" %}<div class="label sale">Sale</div>{% endif %}
                                     {% if product.stock_count <= 0 %}<div class="label stockout">out of stock</div>{% endif %}
                                     <!-- {% if product.created_at %}<div class="label new">New</div>{% endif %} -->
                                     <ul class="product__hover">

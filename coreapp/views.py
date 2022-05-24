@@ -126,8 +126,8 @@ class productDetail(DetailView):
         return context
 
 def categoryView(request, slug):
-    catDetail = Category.objects.get(slug=slug)
-    subcatData = Category.objects.filter(parent_id=catDetail.id)
+    catDetail = Category.objects.get(slug=slug, status=1)
+    subcatData = Category.objects.filter(parent_id=catDetail.id, status=1)
     product = Product.objects.filter(Q(category__in = subcatData) | Q(category=catDetail.id), Q(is_published=1)).order_by('-id')
 
     for singleblog in product:

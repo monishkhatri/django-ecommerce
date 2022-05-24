@@ -86,7 +86,7 @@
             <div class="col-lg-3 col-md-4 col-sm-6 mix women">
                 <div class="product__item">
                     <div class="product__item__pic set-bg" data-setbg="media/{{product.image.path}}">
-                        {% if product.is_in_sale %}<div class="label sale">Sale</div>{% endif %}
+                        {% if product.is_in_sale == "1" %}<div class="label sale">Sale</div>{% endif %}
                         {% if product.stock_count <= 0 %}<div class="label stockout">out of stock</div>{% endif %}
                         <!-- {% if product.created_at %}<div class="label new">New</div>{% endif %} -->
                         <ul class="product__hover">
@@ -116,9 +116,9 @@
 <!-- Product Section End -->
 
 <!-- Banner Section Begin -->
-<section class="banner set-bg" data-setbg="static/img/banner/banner-1.jpg">
+<section class="banner set-bg" data-setbg="static/img/banner/banner.jpg">
     <div class="container">
-        <div class="row">
+        <!-- <div class="row">
             <div class="col-xl-7 col-lg-8 m-auto">
                 <div class="banner__slider owl-carousel">
                     <div class="banner__item">
@@ -144,7 +144,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>
 </section>
 <!-- Banner Section End -->
