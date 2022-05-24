@@ -1,6 +1,7 @@
 from statistics import mode
 from django.db import models
 from django.urls import reverse
+from django.utils.text import slugify
 from django.contrib.auth.models import User
 
 
@@ -19,6 +20,10 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super(Category, self).save(*args, **kwargs)
 
 class Brand(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -56,6 +61,10 @@ class Product(models.Model):
     def clean(self):
         if self.title:
             self.title = self.title.strip()
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.title)
+        super(Product, self).save(*args, **kwargs)
 
 class ProductImage(models.Model):
     id = models.BigAutoField(primary_key=True)

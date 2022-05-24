@@ -12,6 +12,6 @@ urlpatterns = [
     path('logout/', views.handleLogout, name='BlogLogout'),
     ### PRODUCT RELATED
     path('<slug:slug>/', views.productDetail.as_view(), name='productDetail'),
-    path('category/<slug:slug>', views.productDetail.as_view(), name='productDetail'),
+    path('category/<slug:slug>/', views.categoryView, name='categoryView'),
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

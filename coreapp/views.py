@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.contrib import messages
 from django.shortcuts import render
 from .models import Category, Product, ProductImage
@@ -7,6 +8,18 @@ from django.http import HttpRequest, HttpResponse
 from django.contrib.auth.models import User, auth
 from django.views.generic.detail import DetailView
 from django.core.mail import EmailMultiAlternatives
+
+def commonData():
+    context = {}
+    parentCatData = Category.objects.filter(status=1,parent__isnull=True).order_by('id')
+    for cat in parentCatData:
+        cat.subcatData = ""
+        subCategoryData = Category.objects.filter(status=1,parent=cat.id)
+        if subCategoryData:
+            cat.subcatData = subCategoryData
+
+    context['catData'] = parentCatData
+    return context
 
 def handleSignin(request):
     if request.user.is_authenticated:
@@ -18,10 +31,10 @@ def handleSignin(request):
 
         if username == '':
             messages.error(request,'Please enter username!')
-            return render(request, 'login.html')
+            return render(request, 'login.html', {'commonData': commonData()})
         if password == '':
             messages.error(request,'Please enter password!')
-            return render(request, 'login.html')
+            return render(request, 'login.html', {'commonData': commonData()})
         else:
             user = auth.authenticate(username=username, password=password)
             if user is not None:
@@ -29,9 +42,9 @@ def handleSignin(request):
                 return redirect('/')
             else:
                 messages.error(request,'Incorrect username or password!')
-                return render(request, 'coreapp/authentication/login.html')
+                return render(request, 'coreapp/authentication/login.html', {'commonData': commonData()})
     else:
-        return render(request, 'coreapp/authentication/login.html')
+        return render(request, 'coreapp/authentication/login.html', {'commonData': commonData()})
 
 def handleLogout(request):
     auth.logout(request)
@@ -47,15 +60,15 @@ def handleSignup(request):
 
         if len(email)<10:
             messages.error(request, " Your email is not valid")
-            return render(request, 'coreapp/authentication/register.html')
+            return render(request, 'coreapp/authentication/register.html', {'commonData': commonData()})
 
         if len(fname)<2  or len(lname)<2:
             messages.error(request, " First,Last Name Should be proper")
-            return render(request, 'coreapp/authentication/register.html')
+            return render(request, 'coreapp/authentication/register.html', {'commonData': commonData()})
 
         if (pass1!= pass2):
              messages.error(request, " Passwords do not match")
-             return render(request, 'coreapp/authentication/register.html')
+             return render(request, 'coreapp/authentication/register.html', {'commonData': commonData()})
 
         if not User.objects.filter(username=email, email=email ).exists():
             myuser = User.objects.create_user(first_name=fname, last_name=lname, username=email, email=email, password=pass1)
@@ -81,29 +94,17 @@ def handleSignup(request):
             return redirect('/login')
         else:
             messages.error(request, "Whoops .! Username/Email Already in use .!")
-            return render(request, 'coreapp/authentication/register.html')
+            return render(request, 'coreapp/authentication/register.html', {'commonData': commonData()})
     else:
-        return render(request, 'coreapp/authentication/register.html')
-
-def commonData():
-    context = {}
-    parentCatData = Category.objects.filter(status=1,parent__isnull=True).order_by('id')
-    for cat in parentCatData:
-        cat.subcatData = ""
-        subCategoryData = Category.objects.filter(status=1,parent=cat.id)
-        if subCategoryData:
-            cat.subcatData = subCategoryData
-
-    context['catData'] = parentCatData
-    return context
+        return render(request, 'coreapp/authentication/register.html', {'commonData': commonData()})
 
 def index(request):
     product = Product.objects.filter(is_published=1).order_by('-id')
     for singleblog in product:
-        blogsImg = ProductImage.objects.filter(product=singleblog.id).first()
+        proImage = ProductImage.objects.filter(product=singleblog.id).first()
         singleblog.image = ""
-        if blogsImg:
-            singleblog.image = blogsImg
+        if proImage:
+            singleblog.image = proImage
 
     params = {
         'productData': product,
@@ -121,4 +122,25 @@ class productDetail(DetailView):
         product  = Product.objects.get(slug=self.kwargs.get("slug"))
         context = super().get_context_data(*args, **kwargs)
         context['productImg'] = ProductImage.objects.filter(product=product)
+        context['commonData'] = commonData()
         return context
+
+def categoryView(request, slug):
+    catDetail = Category.objects.get(slug=slug)
+    subcatData = Category.objects.filter(parent_id=catDetail.id)
+    product = Product.objects.filter(Q(category__in = subcatData) | Q(category=catDetail.id), Q(is_published=1)).order_by('-id')
+
+    for singleblog in product:
+        proImage = ProductImage.objects.filter(product=singleblog.id).first()
+        singleblog.image = ""
+        if proImage:
+            singleblog.image = proImage
+
+    params = {
+        'productData': product,
+        'categoryData': catDetail,
+        'subCategoryData': subcatData,
+        'commonData': commonData()
+    }
+    
+    return render(request, 'coreapp/category-view.html', params)
