@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_cleanup.apps.CleanupConfig',
+    'ckeditor',
 ]
 
 MIDDLEWARE = [
@@ -149,6 +150,20 @@ MESSAGE_TAGS = {
 
 # JAZZ ADMIN SETTINGS
 # https://django-jazzmin.readthedocs.io/configuration/
+
+# CKEDITOR SETTINGS
+# https://pypi.org/project/django-ckeditor/#example-ckeditor-configuration
+CKEDITOR_CONFIGS = {    
+    'default': {        
+        'toolbar': [
+            ['Bold', 'Italic', 'Underline'],
+            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+            ['RemoveFormat', 'Source']
+        ],
+        'width': 700,
+    },
+}
+CKEDITOR_ALLOW_NONIMAGE_FILES = False
 
 JAZZMIN_SETTINGS = {
     "site_title": "Web Ecommerce",

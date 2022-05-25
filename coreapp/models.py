@@ -2,8 +2,8 @@ from statistics import mode
 from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
+from ckeditor.fields import RichTextField
 from django.contrib.auth.models import User
-
 
 # Create your models here.
 class Status:
@@ -45,8 +45,8 @@ class Product(models.Model):
     slug = models.SlugField(max_length=500, default=None)
     title = models.CharField(max_length=500, default=None)
     desc_short = models.TextField()
-    desc_long = models.TextField()
-    specification = models.TextField()
+    desc_long = RichTextField()
+    specification = RichTextField()
     dashed_price = models.FloatField(null=True, blank=True, default=None)
     actual_price = models.FloatField(null=True, blank=True, default=None)
     stock_count = models.IntegerField(default=0)
