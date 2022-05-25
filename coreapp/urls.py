@@ -10,8 +10,11 @@ urlpatterns = [
     path('login/', views.handleSignin, name='BlogLogin'),
     path('register/', views.handleSignup, name='BlogRegister'),
     path('logout/', views.handleLogout, name='BlogLogout'),
+    ### STATIC PAGE 
+    path('contact/', views.contactView, name='mycart'),
     ### PRODUCT RELATED
-    path('<slug:slug>/', views.productDetail.as_view(), name='productDetail'),
+    path('my-cart/', views.cartView, name='mycart'),
+    path('checkout/', views.checkoutView, name='checkout'),
     path('category/<slug:slug>/', views.categoryView, name='categoryView'),
-    
+    path('<slug:slug>/', views.productDetail.as_view(), name='productDetail'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

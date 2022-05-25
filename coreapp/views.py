@@ -144,3 +144,22 @@ def categoryView(request, slug):
     }
     
     return render(request, 'coreapp/category-view.html', params)
+
+def cartView(request):
+    params = {
+        'commonData': commonData()
+    }
+    return render(request, 'coreapp/cart.html', params)
+
+def checkoutView(request):
+    params = {
+        'commonData': commonData()
+    }
+    return render(request, 'coreapp/checkout.html', params)
+
+def contactView(request):
+    params = {
+        'commonData': commonData()
+    }
+    return render(request, 'coreapp/contact.html', params)
+    
