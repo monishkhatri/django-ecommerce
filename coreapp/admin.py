@@ -11,6 +11,11 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ['name', 'parent', 'status', 'created_at']
     exclude = ['slug']
 
+    def save_model(self, request, obj, form, change):
+        if 'parent' not in request.POST:
+            obj.parent = None
+        return super().save_model(request, obj, form, change)
+        
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
         if len(form.base_fields) > 0:
@@ -18,6 +23,7 @@ class CategoryAdmin(admin.ModelAdmin):
             form.base_fields['parent'].required = False
             return form
         return form
+
 @admin.register(Brand)
 class BrandAdmin(admin.ModelAdmin):
     list_display = ['name', 'status', 'created_at']
@@ -63,7 +69,8 @@ class ProductAdmin(admin.ModelAdmin):
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
         if len(form.base_fields) > 0:
-            form.base_fields['category'].queryset = Category.objects.filter(parent=None)
+            form.base_fields['category'].queryset = Category.objects.filter(status=1,parent=None)
+            form.base_fields['subcategory'].queryset = Category.objects.filter(status=1,parent__isnull=False)
             form.base_fields["title"].label = "Product Title:"
             form.base_fields['is_published'].label = "Is Product Published:"
             return form
