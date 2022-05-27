@@ -1,3 +1,4 @@
+from django import forms
 from django.contrib import admin
 from django.utils.html import format_html
 from django.contrib.auth.models import User
@@ -10,6 +11,13 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ['name', 'parent', 'status', 'created_at']
     exclude = ['slug']
 
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        if len(form.base_fields) > 0:
+            print(form.base_fields['parent'])
+            form.base_fields['parent'].required = False
+            return form
+        return form
 @admin.register(Brand)
 class BrandAdmin(admin.ModelAdmin):
     list_display = ['name', 'status', 'created_at']
@@ -32,6 +40,8 @@ class ProdutImageTabulurInline(admin.TabularInline):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
+    # This is for change tempalte if you want to
+    change_form_template = 'admin/product-edit.html'
     inlines = [
         ProdutImageTabulurInline
     ]
@@ -39,7 +49,7 @@ class ProductAdmin(admin.ModelAdmin):
     # For set Initial Values in create/update forms
     # def get_changeform_initial_data(self, request):
     #     return {'user': request.user.id}
-
+    
     # For Fields Shown in listing
     def created_on(self, obj):
         return obj.created_at.strftime("%d %b %Y")
@@ -53,8 +63,9 @@ class ProductAdmin(admin.ModelAdmin):
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
         if len(form.base_fields) > 0:
+            form.base_fields['category'].queryset = Category.objects.filter(parent=None)
             form.base_fields["title"].label = "Product Title:"
-            form.base_fields["is_published"].label = "Is Product Published:"
+            form.base_fields['is_published'].label = "Is Product Published:"
             return form
         return form
     

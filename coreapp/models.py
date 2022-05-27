@@ -41,6 +41,7 @@ class Product(models.Model):
     id = models.BigAutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, default=None)
+    subcategory = models.ForeignKey(Category, on_delete=models.CASCADE, default=None, related_name='%(class)s_requests_created')
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE, default=None)
     slug = models.SlugField(max_length=500, default=None)
     title = models.CharField(max_length=500, default=None)
