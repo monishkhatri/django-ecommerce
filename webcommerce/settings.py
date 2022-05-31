@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'jazzmin',
+    'rest_framework',
     'coreapp.apps.CoreappConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -172,4 +173,15 @@ JAZZMIN_SETTINGS = {
     "welcome_sign": "Welcome to the Web E-commerce",
     "copyright": "Web E-Commerce",
     "search_model": "auth.User",
+}
+
+# https://www.django-rest-framework.org/?q=#example
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    # ]
 }
