@@ -1,8 +1,13 @@
-from django.contrib.auth.models import User, Group
 from rest_framework import serializers
+from coreapp.models import Brand
 
-
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+class BrandxSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = User
-        fields = ['url', 'username', 'email', 'groups']
+        model = Brand
+        fields = '__all__'
+
+class BrandSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Brand
+        fields = ['name', 'description']
+        # fields = '__all__'
