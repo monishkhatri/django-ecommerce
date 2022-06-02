@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 class Status:
     STATUS =(("1", "Active"),("0", "De-active"),)
     YESNO =(("1", "Yes"),("0", "No"),)
+
 class Category(models.Model):
     id = models.BigAutoField(primary_key=True)
     slug = models.SlugField(max_length=500, default=None)

@@ -1,12 +1,12 @@
 from django.db.models import Q
 from django.contrib import messages
 from django.shortcuts import render
-from .models import Category, Product, ProductImage
 from django.shortcuts import render, redirect
 from django.template.loader import get_template
 from django.http import HttpRequest, HttpResponse
 from django.contrib.auth.models import User, auth
 from django.views.generic.detail import DetailView
+from .models import Category, Product, ProductImage
 from django.core.mail import EmailMultiAlternatives
 
 def commonData():
