@@ -10,13 +10,13 @@
                 <nav class="header__menu">
                     <ul>
                         <li class="active"><a href="/">Home</a></li>
-                        {% for cat in commonData.catData %}
+                        {% for category in commonData.globalCategory %}
                         <li>
-                            <a href="/category/{{cat.slug}}">{{cat}}</a>
-                            {% if cat.subcatData %}
+                            <a href="/category/{{category.slug}}">{{category}}</a>
+                            {% if category.subcatData %}
                             <ul class="dropdown">
-                                {% for subcat in cat.subcatData %}
-                                <li><a href="/category/{{subcat.slug}}">{{subcat}}</a></li>
+                                {% for subcategory in category.subcatData %}
+                                <li><a href="/category/{{subcategory.slug}}">{{subcategory}}</a></li>
                                 {% endfor %}
                             </ul>
                             {% endif %}

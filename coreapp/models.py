@@ -14,7 +14,7 @@ class Category(models.Model):
     id = models.BigAutoField(primary_key=True)
     slug = models.SlugField(max_length=500, default=None)
     name = models.CharField(max_length=250)
-    parent = models.ForeignKey("self", on_delete=models.CASCADE, default='0', null=True)
+    parent = models.ForeignKey("self", on_delete=models.CASCADE, blank=True, null=True)
     status = models.CharField(max_length = 20, choices = Status.STATUS, default = '1')
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)

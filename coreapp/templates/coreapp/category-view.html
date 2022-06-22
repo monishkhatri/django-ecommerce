@@ -9,7 +9,12 @@
                 <div class="col-lg-12">
                     <div class="breadcrumb__links">
                         <a href="/"><i class="fa fa-home"></i> Home</a>
+                        {% if categoryData %}
                         <span>{{categoryData.name}}</span>
+                        {% endif %}
+                        {% if subCategoryData %}
+                        <span>{{categoryData.name}}</span>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -28,22 +33,26 @@
                                 <h4>Categories</h4>
                             </div>
                             <div class="categories__accordion">
-                                <div class="accordion" id="accordionExample">
+                                {% for category in commonData.globalCategory %}
+                                <div class="accordion accordion_cat" id="accordionExample">
                                     <div class="card">
-                                        <div class="card-heading active">
-                                            <a data-toggle="collapse" data-target="#collapseOne">{{categoryData.name}}</a>
+                                        <div class="card-heading active">                                            
+                                            <a data-toggle="collapse" data-target="#{{category.slug}}" href="/category/{{category.slug}}">{{category}}</a>
                                         </div>
-                                        <div id="collapseOne" class="collapse show" data-parent="#accordionExample">
+                                        {% if category.subcatData %}
+                                        <div id="{{category.slug}}" class="collapse show" data-parent="#accordionExample">
                                             <div class="card-body">
                                                 <ul>
-                                                    {% for subcat in subCategoryData %}
-                                                    <li><a href="/category/{{subcat.slug}}/">{{subcat.name}}</a></li>
+                                                    {% for subcategory in category.subcatData %}
+                                                    <li><a href="/category/{{subcategory.slug}}">{{subcategory}}</a></li>
                                                     {% endfor %}
                                                 </ul>
                                             </div>
                                         </div>
+                                        {% endif %}
                                     </div>
                                 </div>
+                                {% endfor %}
                             </div>
                         </div>
                         <!-- <div class="sidebar__filter">

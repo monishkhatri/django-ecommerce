@@ -15,11 +15,11 @@ class CategoryAdmin(admin.ModelAdmin):
         if 'parent' not in request.POST:
             obj.parent = None
         return super().save_model(request, obj, form, change)
-        
+    
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
-        if len(form.base_fields) > 0:
-            print(form.base_fields['parent'])
+        if len(form.base_fields) > 0:            
+            form.base_fields['parent'].queryset = Category.objects.filter(status=1, parent__isnull=True)
             form.base_fields['parent'].required = False
             return form
         return form

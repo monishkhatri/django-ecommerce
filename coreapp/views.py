@@ -18,7 +18,7 @@ def commonData():
         if subCategoryData:
             cat.subcatData = subCategoryData
 
-    context['catData'] = parentCatData
+    context['globalCategory'] = parentCatData
     return context
 
 def handleSignin(request):
@@ -126,9 +126,18 @@ class productDetail(DetailView):
         return context
 
 def categoryView(request, slug):
-    catDetail = Category.objects.get(slug=slug, status=1)
-    subcatData = Category.objects.filter(parent_id=catDetail.id, status=1)
-    product = Product.objects.filter(Q(category__in = subcatData) | Q(category=catDetail.id), Q(is_published=1)).order_by('-id')
+    catDetail = Category.objects.get(slug=slug)
+    subcatData = ""
+    if catDetail.parent is not None:
+        catDetail = Category.objects.get(id=catDetail.parent.id)
+        subcatData = Category.objects.filter(slug=slug)
+    d = {"category":catDetail.id,"is_published":1}
+    
+    if subcatData:
+        d.update({
+            "subcategory":subcatData[0].id
+        })
+    product = Product.objects.filter(**d).order_by('-id')
 
     for singleblog in product:
         proImage = ProductImage.objects.filter(product=singleblog.id).first()
