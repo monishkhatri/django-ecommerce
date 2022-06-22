@@ -1,11 +1,12 @@
-from django.db.models import Q
-from django.contrib import messages
+from django.conf import settings
 from django.shortcuts import render
+from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.template.loader import get_template
-from django.http import HttpRequest, HttpResponse
+from django.http import Http404, HttpRequest, HttpResponse
 from django.contrib.auth.models import User, auth
 from django.views.generic.detail import DetailView
+from coreapp.cart import Cart
 from .models import Category, Product, ProductImage
 from django.core.mail import EmailMultiAlternatives
 
@@ -127,6 +128,9 @@ class productDetail(DetailView):
 
 def categoryView(request, slug):
     catDetail = Category.objects.get(slug=slug)
+    if catDetail.status is "0":
+        raise Http404
+
     subcatData = ""
     if catDetail.parent is not None:
         catDetail = Category.objects.get(id=catDetail.parent.id)
@@ -154,21 +158,37 @@ def categoryView(request, slug):
     
     return render(request, 'coreapp/category-view.html', params)
 
-def cartView(request):
-    params = {
-        'commonData': commonData()
-    }
-    return render(request, 'coreapp/cart.html', params)
-
 def checkoutView(request):
-    params = {
-        'commonData': commonData()
-    }
+    params = {'commonData': commonData()}
     return render(request, 'coreapp/checkout.html', params)
 
 def contactView(request):
-    params = {
-        'commonData': commonData()
-    }
+    params = {'commonData': commonData()}
     return render(request, 'coreapp/contact.html', params)
-    
+
+def cartDetail(request):
+    params = {'commonData': commonData()}
+    return render(request, 'coreapp/cart.html', params)
+
+def cartAdd(request, id):
+    cart = Cart(request)
+    product = Product.objects.get(id=id)
+    cart.add(product=product)
+    return redirect("mycart")
+
+def cartDeleteProduct(request, id):
+    cart = Cart(request)
+    product = Product.objects.get(id=id)
+    cart.decrement(product=product)
+    return redirect("mycart")
+
+def cartItemclear(request, id):
+    cart = Cart(request)
+    product = Product.objects.get(id=id)
+    cart.remove(product)
+    return redirect("mycart")
+
+def cartClear(request):
+    cart = Cart(request)
+    cart.clear()
+    return redirect("home")
