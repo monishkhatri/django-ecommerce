@@ -1,10 +1,13 @@
 function amount(value){
     return value.toLocaleString('en-US')
 }
+function updateCartBag(value){
+    $(".shoppingBag").html(value)
+}
 $(document).ready(function(){
-    
     /*------------------------Cart Code Start-----------------------*/
     /*------------------------------------------------------------*/
+    
     function cartOperation(productId, productQty = 1, type="add"){
 
         url = '/my-cart/add/' + productId + "/";

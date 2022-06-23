@@ -10,7 +10,12 @@ from coreapp.cart import Cart
 from .models import Category, Product, ProductImage
 from django.core.mail import EmailMultiAlternatives
 
-def commonData():
+def returnRender(request, page, params = {}):
+    params['commonData'] = commonData(request)
+    print('>>>>>>>>>>>>>',page)
+    return render(request, page, params)
+
+def commonData(request):
     context = {}
     parentCatData = Category.objects.filter(status=1,parent__isnull=True).order_by('id')
     for cat in parentCatData:
@@ -18,7 +23,8 @@ def commonData():
         subCategoryData = Category.objects.filter(status=1,parent=cat.id)
         if subCategoryData:
             cat.subcatData = subCategoryData
-
+    
+    # print(request.session['cartsession'])
     context['globalCategory'] = parentCatData
     return context
 
@@ -31,11 +37,11 @@ def handleSignin(request):
         password = request.POST.get('password')
 
         if username == '':
-            messages.error(request,'Please enter username!')
-            return render(request, 'login.html', {'commonData': commonData()})
+            messages.error(request,'Please enter username!')            
+            returnRender(request, 'login.html')
         if password == '':
             messages.error(request,'Please enter password!')
-            return render(request, 'login.html', {'commonData': commonData()})
+            returnRender(request, 'login.html')
         else:
             user = auth.authenticate(username=username, password=password)
             if user is not None:
@@ -43,9 +49,9 @@ def handleSignin(request):
                 return redirect('/')
             else:
                 messages.error(request,'Incorrect username or password!')
-                return render(request, 'coreapp/authentication/login.html', {'commonData': commonData()})
+                returnRender(request, 'coreapp/authentication/login.html')
     else:
-        return render(request, 'coreapp/authentication/login.html', {'commonData': commonData()})
+        returnRender(request, 'coreapp/authentication/login.html')
 
 def handleLogout(request):
     auth.logout(request)
@@ -61,15 +67,15 @@ def handleSignup(request):
 
         if len(email)<10:
             messages.error(request, " Your email is not valid")
-            return render(request, 'coreapp/authentication/register.html', {'commonData': commonData()})
+            returnRender(request, 'coreapp/authentication/register.html')
 
         if len(fname)<2  or len(lname)<2:
             messages.error(request, " First,Last Name Should be proper")
-            return render(request, 'coreapp/authentication/register.html', {'commonData': commonData()})
+            returnRender(request, 'coreapp/authentication/register.html')
 
         if (pass1!= pass2):
              messages.error(request, " Passwords do not match")
-             return render(request, 'coreapp/authentication/register.html', {'commonData': commonData()})
+             returnRender(request, 'coreapp/authentication/register.html')
 
         if not User.objects.filter(username=email, email=email ).exists():
             myuser = User.objects.create_user(first_name=fname, last_name=lname, username=email, email=email, password=pass1)
@@ -95,9 +101,9 @@ def handleSignup(request):
             return redirect('/login')
         else:
             messages.error(request, "Whoops .! Username/Email Already in use .!")
-            return render(request, 'coreapp/authentication/register.html', {'commonData': commonData()})
+            returnRender(request, 'coreapp/authentication/register.html')
     else:
-        return render(request, 'coreapp/authentication/register.html', {'commonData': commonData()})
+        returnRender(request, 'coreapp/authentication/register.html')
 
 def index(request):
     product = Product.objects.filter(is_published=1).order_by('-id')
@@ -107,12 +113,9 @@ def index(request):
         if proImage:
             singleblog.image = proImage
 
-    params = {
+    return returnRender(request, 'coreapp/index.html', {
         'productData': product,
-        'commonData': commonData()
-    }
-    
-    return render(request, 'coreapp/index.html', params)
+    })
 
 class productDetail(DetailView):
     model = Product
@@ -123,7 +126,7 @@ class productDetail(DetailView):
         product  = Product.objects.get(slug=self.kwargs.get("slug"))
         context = super().get_context_data(*args, **kwargs)
         context['productImg'] = ProductImage.objects.filter(product=product)
-        context['commonData'] = commonData()
+        context['commonData'] = commonData(self.request)
         return context
 
 def categoryView(request, slug):
@@ -148,31 +151,27 @@ def categoryView(request, slug):
         singleblog.image = ""
         if proImage:
             singleblog.image = proImage
-
-    params = {
+    
+    return returnRender(request, 'coreapp/category-view.html', {
         'productData': product,
         'categoryData': catDetail,
-        'subCategoryData': subcatData,
-        'commonData': commonData()
-    }
+        'subCategoryData': subcatData
+    })
     
-    return render(request, 'coreapp/category-view.html', params)
 
 def checkoutView(request):
-    params = {'commonData': commonData()}
-    return render(request, 'coreapp/checkout.html', params)
+    return returnRender(request, 'coreapp/checkout.html')
 
 def contactView(request):
-    params = {'commonData': commonData()}
-    return render(request, 'coreapp/contact.html', params)
+    return returnRender(request, 'coreapp/contact.html')
+
 """
     CART FUNCTIONS
 """
 from django.views.decorators.csrf import csrf_exempt
 @csrf_exempt
 def cartDetail(request):
-    params = {'commonData': commonData()}
-    return render(request, 'coreapp/cart.html', params)
+    return returnRender(request, 'coreapp/cart.html')
 
 @csrf_exempt
 def cartAdd(request, id):
