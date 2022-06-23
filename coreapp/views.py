@@ -41,10 +41,10 @@ def handleSignin(request):
 
         if username == '':
             messages.error(request,'Please enter username!')            
-            returnRender(request, 'login.html')
+            return returnRender(request, 'login.html')
         if password == '':
             messages.error(request,'Please enter password!')
-            returnRender(request, 'login.html')
+            return returnRender(request, 'login.html')
         else:
             user = auth.authenticate(username=username, password=password)
             if user is not None:
@@ -52,9 +52,9 @@ def handleSignin(request):
                 return redirect('/')
             else:
                 messages.error(request,'Incorrect username or password!')
-                returnRender(request, 'coreapp/authentication/login.html')
+                return returnRender(request, 'coreapp/authentication/login.html')
     else:
-        returnRender(request, 'coreapp/authentication/login.html')
+        return returnRender(request, 'coreapp/authentication/login.html')
 
 def handleLogout(request):
     auth.logout(request)
@@ -70,15 +70,15 @@ def handleSignup(request):
 
         if len(email)<10:
             messages.error(request, " Your email is not valid")
-            returnRender(request, 'coreapp/authentication/register.html')
+            return returnRender(request, 'coreapp/authentication/register.html')
 
         if len(fname)<2  or len(lname)<2:
             messages.error(request, " First,Last Name Should be proper")
-            returnRender(request, 'coreapp/authentication/register.html')
+            return returnRender(request, 'coreapp/authentication/register.html')
 
         if (pass1!= pass2):
              messages.error(request, " Passwords do not match")
-             returnRender(request, 'coreapp/authentication/register.html')
+             return returnRender(request, 'coreapp/authentication/register.html')
 
         if not User.objects.filter(username=email, email=email ).exists():
             myuser = User.objects.create_user(first_name=fname, last_name=lname, username=email, email=email, password=pass1)
@@ -104,9 +104,9 @@ def handleSignup(request):
             return redirect('/login')
         else:
             messages.error(request, "Whoops .! Username/Email Already in use .!")
-            returnRender(request, 'coreapp/authentication/register.html')
+            return returnRender(request, 'coreapp/authentication/register.html')
     else:
-        returnRender(request, 'coreapp/authentication/register.html')
+        return returnRender(request, 'coreapp/authentication/register.html')
 
 def index(request):
     product = Product.objects.filter(is_published=1).order_by('-id')
