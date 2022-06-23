@@ -12,11 +12,11 @@ from django.core.mail import EmailMultiAlternatives
 
 def returnRender(request, page, params = {}):
     params['commonData'] = commonData(request)
-    print('>>>>>>>>>>>>>',page)
     return render(request, page, params)
 
 def commonData(request):
     context = {}
+    totalCartItem = 0
     parentCatData = Category.objects.filter(status=1,parent__isnull=True).order_by('id')
     for cat in parentCatData:
         cat.subcatData = ""
@@ -24,8 +24,11 @@ def commonData(request):
         if subCategoryData:
             cat.subcatData = subCategoryData
     
-    # print(request.session['cartsession'])
+    if request.session['cartsession']:
+        totalCartItem = len(request.session['cartsession'])
+    
     context['globalCategory'] = parentCatData
+    context['totalCartItem'] = totalCartItem
     return context
 
 def handleSignin(request):
