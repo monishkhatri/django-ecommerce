@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.template.loader import get_template
-from django.http import Http404, HttpRequest, HttpResponse
+from django.http import Http404, HttpRequest, HttpResponse, JsonResponse
 from django.contrib.auth.models import User, auth
 from django.views.generic.detail import DetailView
 from coreapp.cart import Cart
@@ -165,30 +165,43 @@ def checkoutView(request):
 def contactView(request):
     params = {'commonData': commonData()}
     return render(request, 'coreapp/contact.html', params)
-
+"""
+    CART FUNCTIONS
+"""
+from django.views.decorators.csrf import csrf_exempt
+@csrf_exempt
 def cartDetail(request):
     params = {'commonData': commonData()}
     return render(request, 'coreapp/cart.html', params)
 
+@csrf_exempt
 def cartAdd(request, id):
+    cartQty = int(request.POST.get('cartQty', 0))
     cart = Cart(request)
     product = Product.objects.get(id=id)
-    cart.add(product=product)
-    return redirect("mycart")
+    if cartQty > 0:
+        for i in range(cartQty):
+            cart.add(product=product)
+    return JsonResponse({
+        "success":True
+    })
 
+@csrf_exempt
 def cartDeleteProduct(request, id):
     cart = Cart(request)
     product = Product.objects.get(id=id)
     cart.decrement(product=product)
-    return redirect("mycart")
+    return JsonResponse({"success":True})
 
+@csrf_exempt
 def cartItemclear(request, id):
     cart = Cart(request)
     product = Product.objects.get(id=id)
     cart.remove(product)
-    return redirect("mycart")
+    return JsonResponse({"success":True})
 
+@csrf_exempt
 def cartClear(request):
     cart = Cart(request)
     cart.clear()
-    return redirect("home")
+    return JsonResponse({"success":True})

@@ -41,22 +41,22 @@
                                         <div class="cart__product__item__title">
                                             <h6>{{value.name}}</h6>
                                             <div class="rating">
+                                                {% for i in '0123'|make_list %}
                                                 <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
+                                                {% endfor %}
                                             </div>
                                         </div>
                                     </td>
                                     <td class="cart__price">$ {{value.price}}</td>
                                     <td class="cart__quantity">
                                         <div class="pro-qty">
-                                            <input type="text" value="{{value.quantity}}">
+                                            <input data-proid="{{value.product_id}}" class="cartProductQty" type="text" value="{{value.quantity}}">
                                         </div>
                                     </td>
                                     <td class="cart__total">$ {% widthratio value.price 1 value.quantity %}</td>
-                                    <td class="cart__close"><span class="icon_close"></span></td>
+                                    <td class="cart__close">
+                                        <span data-proid="{{value.product_id}}" class="icon_close clear-cart"></span>
+                                    </td>
                                 </tr>
                                 {% endfor %}
                                 {% else %}
@@ -75,8 +75,11 @@
                     <div class="cart__total__procced">
                         <h6>Cart total</h6>
                         <ul>
-                            <li>Subtotal <span>$ 750.0</span></li>
-                            <li>Total <span>$ 750.0</span></li>
+                            <li>Subtotal <span class="subtotal_val"></span></li>
+                            <li>Promotional Discount <span>- $ 100</span></li>                            
+                            <li>Delivery Fee <span style="color:green">Free</span></li> 
+                            <hr>                         
+                            <li>Total <span class="total_val"></span></li>
                         </ul>
                         <a href="#" class="primary-btn">Proceed to checkout</a>
                     </div>
@@ -86,5 +89,15 @@
         </div>
     </section>
     <!-- Shop Cart Section End -->
-
+{% endblock %}
+{% block js %}
+<script>
+    totalSubtotalVal = 0
+    $(".cart__total").each(function() {
+        total = parseInt($(this).html().replace ( /[^\d.]/g, '' ))
+        totalSubtotalVal = totalSubtotalVal + total
+    })        
+    $(".subtotal_val").html("$ " + amount(totalSubtotalVal))
+    $(".total_val").html("$ " + amount(totalSubtotalVal - 100))
+</script>
 {% endblock %}
